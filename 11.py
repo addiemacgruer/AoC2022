@@ -1,5 +1,7 @@
 #!/usr/bin/python3
 
+OLD = -1
+
 def do_part(part):
     monkeys = []
     modulo = 1
@@ -9,7 +11,7 @@ def do_part(part):
         def turn(self):
             for old in self.items:
                 self.inspects = self.inspects + 1
-                rhs = old if self.operation[2] == "old" else int(self.operation[2])
+                rhs = old if self.operation[2] == OLD else self.operation[2]
                 if self.operation[1] == "+":
                     new = old + rhs
                 else:
@@ -25,7 +27,7 @@ def do_part(part):
                 else:
                     monkeys[self.false].items.append(new)
                  
-            self.items = []
+            self.items.clear()
 
     with open("input11.txt") as ih:
         inp = list(reversed([line.strip() for line in ih.readlines()]))
@@ -37,7 +39,9 @@ def do_part(part):
         elif l.startswith("Starting items"):
             monkeys[-1].items = [int(x) for x in l.split(": ")[1].split(", ")]
         elif l.startswith("Operation"):
-            monkeys[-1].operation = l.split(" = ")[1].split(" ")
+            ops = l.split(" = ")[1].split(" ")
+            ops[-1] = OLD if ops[-1] == "old" else int(ops[-1])
+            monkeys[-1].operation = ops
         elif l.startswith("Test: "):
             monkeys[-1].test = int(l.split(" ")[-1])
         elif l.startswith("If true:"):
